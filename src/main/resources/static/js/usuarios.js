@@ -2,14 +2,15 @@
 $(document).ready(function() {
 cargarUsuarios();
   $('#usuarios').DataTable();
+  actualizarEmailDelUsuario();
 });
+function actualizarEmailDelUsuario(){
+ document.getElementById('txt-email-usuario').outerHTML=localStorage.email;
+}
 async function cargarUsuarios(){
   const request = await fetch('api/usuarios', {
     method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
+    headers: getHeaders()
   });
   const usuarios = await request.json();
 
@@ -24,17 +25,20 @@ async function cargarUsuarios(){
 
   document.querySelector('#usuarios tbody').outerHTML=listadohtml;
 }
-
+function getHeaders(){
+    return  {
+                 'Accept': 'application/json',
+                 'Content-Type': 'application/json',
+                 'Authorization': localStorage.token
+               };
+}
 async function eliminarUsuario(id){
 if(!confirm('¿Desea eliminar a este usuario?')){
     return;
 }
   const request = await fetch('api/eliminar/'+id, {
     method: 'DELETE',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
+    headers: getHeaders()
   });
     location.reload();
 }
